@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=base64:randomkey
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=laravel
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+
+  db:
+    image: mysql:5.7
+    container_name: laravel_db
+    restart: unless-stopped
+    ports:
+      - "33060:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    container_name: puppeteer_bot
+    volumes:
+      - ./bot:/usr/src/app
+    depends_on:
+      - app
+    environment:
+      - API_URL=http://app:80/api
+
+volumes:
+  dbdata:
