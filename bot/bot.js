@@ -1,32 +1,22 @@
 const puppeteer = require('puppeteer');
 const axios = require('axios');
 
-const API_URL = process.env.API_URL || 'http://localhost:8000/api';
+const API_URL = process.env.API_URL || 'http://nginx:80/api';
 
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
-  // Navigate to Spotify new releases page
-  await page.goto('https://spotify.com/new-releases');
+  const response = await axios.get(`${API_URL}/new-releases`);
+  const albums = response.data;
 
-  // Extract data (this is just an example; adjust selectors as needed)
-  const newReleases = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll('.release')).map(release => ({
-      artist: release.querySelector('.artist').innerText,
-      title: release.querySelector('.title').innerText,
-      genre: release.querySelector('.genre').innerText,
-      label: release.querySelector('.label').innerText,
-      email: release.querySelector('.email') ? release.querySelector('.email').innerText : null,
-      instagram: release.querySelector('.instagram') ? release.querySelector('.instagram').innerText : null,
-      facebook: release.querySelector('.facebook') ? release.querySelector('.facebook').innerText : null,
-      website: release.querySelector('.website') ? release.querySelector('.website').innerText : null,
-      youtube: release.querySelector('.youtube') ? release.querySelector('.youtube').innerText : null,
-    }));
-  });
-
-  // Send data to Laravel API
-  await axios.post(`${API_URL}/new-releases`, { newReleases });
+  for (const album of albums) {
+    const artistName = album.artist;
+    // Perform Puppeteer scraping to get additional artist information
+    // Example: Search for artist on Spotify and get additional data
+    await page.goto(`https://open.spotify.com/search/${encodeURIComponent(artistName)}`);
+    // Scrape artist information and update database
+  }
 
   await browser.close();
 })();
