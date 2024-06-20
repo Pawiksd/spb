@@ -3,8 +3,10 @@ FROM node:16
 # Set working directory
 WORKDIR /usr/src/app
 
-# Install dependencies
+# Copy package.json and package-lock.json
 COPY ./bot/package*.json ./
+
+# Install dependencies
 RUN npm install
 
 # Copy existing application directory contents

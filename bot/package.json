@@ -1,0 +1,13 @@
+{
+  "name": "puppeteer-bot",
+  "version": "1.0.0",
+  "description": "Spotify scraper bot",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "puppeteer": "^10.0.0"
+  }
+}
