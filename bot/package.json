@@ -7,7 +7,7 @@
     "start": "node bot.js"
   },
   "dependencies": {
-    "axios": "^0.21.1",
-    "puppeteer": "^10.0.0"
+    "puppeteer": "^22.0.0",
+    "axios": "^0.21.1"
   }
 }
