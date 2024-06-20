@@ -3,13 +3,11 @@ version: '3.8'
 services:
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile-app
     container_name: laravel_app
-    ports:
-      - "8000:80"
     volumes:
-      - .:/var/www/html
+      - ../app:/var/www/html
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
@@ -20,6 +18,17 @@ services:
       - DB_DATABASE=laravel
       - DB_USERNAME=root
       - DB_PASSWORD=root
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ../app:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
 
   db:
     image: mysql:5.7
@@ -37,15 +46,15 @@ services:
 
   bot:
     build:
-      context: ./bot
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile-bot
     container_name: puppeteer_bot
     volumes:
-      - ./bot:/usr/src/app
+      - ../bot:/usr/src/app
     depends_on:
       - app
     environment:
-      - API_URL=http://app:80/api
+      - API_URL=http://nginx:80/api
 
 volumes:
   dbdata:

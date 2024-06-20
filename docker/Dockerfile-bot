@@ -4,11 +4,11 @@ FROM node:16
 WORKDIR /usr/src/app
 
 # Install dependencies
-COPY package*.json ./
+COPY ./bot/package*.json ./
 RUN npm install
 
 # Copy existing application directory contents
-COPY . .
+COPY ./bot ./
 
 # Expose port (if needed)
 EXPOSE 3000
