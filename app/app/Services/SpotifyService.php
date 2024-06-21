@@ -42,7 +42,7 @@ class SpotifyService
     public function getNewReleases()
     {
         $token = $this->getAccessToken();
-        $response = $this->client->get('browse/new-releases', [
+        $response = $this->client->get('browse/new-releases?limit=50', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
             ],
