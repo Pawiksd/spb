@@ -5,17 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use App\Http\Controllers\SettingsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,6 +21,11 @@ Route::get('/assign-admin-role', function() {
     return 'Admin role assigned to all users';
 });
 
+Route::middleware(['auth', 'can:admin'])->group(function () {
+    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
@@ -44,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('logout');
 
     Route::middleware(['can:admin'])->group(function () {
-        Route::resource('users', UserController::class)->only(['index']);
+        Route::resource('users', UserController::class)->except(['create', 'show', 'store']);
     });
 });
 

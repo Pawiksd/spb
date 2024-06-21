@@ -1,10 +1,9 @@
-<nav x-data="{ open: false }" class="bg-gray-800 border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<nav x-data="{ open: false }" class="bg-white shadow-md">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-            <div class="flex">
+            <div class="flex items-center">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
+                <div class="shrink-0">
                     <a href="{{ route('dashboard') }}">
                         <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10 w-auto">
                     </a>
@@ -25,6 +24,12 @@
                     <x-nav-link :href="route('profile.show')" :active="request()->routeIs('profile.show')">
                         {{ __('Profile') }}
                     </x-nav-link>
+
+                    @can('admin')
+                        <x-nav-link :href="route('settings.edit')" :active="request()->routeIs('settings.edit')">
+                            {{ __('Settings') }}
+                        </x-nav-link>
+                    @endcan
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

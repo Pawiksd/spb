@@ -7,12 +7,12 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+<body class="font-sans antialiased bg-gray-100">
+    <div class="min-h-screen flex flex-col">
         @include('layouts.header')
 
         <!-- Page Content -->
-        <main>
+        <main class="flex-grow container mx-auto p-4">
             @yield('content')
             {{ $slot ?? '' }}
         </main>
