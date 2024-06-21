@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,12 +33,19 @@ Route::get('/assign-admin-role', function() {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::post('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
+
+    Route::middleware(['can:admin'])->group(function () {
+        Route::resource('users', UserController::class)->only(['index']);
+    });
 });
 
 require __DIR__.'/auth.php';
