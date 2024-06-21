@@ -8,6 +8,12 @@ services:
     container_name: laravel_app
     volumes:
       - ../app:/var/www/html
+      - ../app/public:/var/www/html/public
+      - ../app/resources:/var/www/html/resources
+      - ../app/routes:/var/www/html/routes
+      - ../app/config:/var/www/html/config
+      - ../app/database:/var/www/html/database
+      - ../app/storage:/var/www/html/storage
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
@@ -17,6 +23,8 @@ services:
       - DB_DATABASE=laravel
       - DB_USERNAME=root
       - DB_PASSWORD=root
+    depends_on:
+      - db
 
   nginx:
     image: nginx:latest
