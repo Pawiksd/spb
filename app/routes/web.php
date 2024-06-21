@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,6 +17,16 @@ use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/assign-admin-role', function() {
+    $role = Role::firstOrCreate(['name' => 'admin']);
+
+    User::all()->each(function($user) use ($role) {
+        $user->assignRole($role);
+    });
+
+    return 'Admin role assigned to all users';
 });
 
 Route::get('/dashboard', function () {
