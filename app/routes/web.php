@@ -6,6 +6,8 @@ use App\Http\Controllers\UserController;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,10 +27,12 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
-
+/*
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->name('dashboard');
+})->name('dashboard');*/
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -38,9 +42,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 
+
+
     Route::middleware(['can:admin'])->group(function () {
         Route::resource('users', UserController::class)->except(['create', 'show', 'store']);
     });
 });
+
+Route::get('/download-report', [ReportController::class, 'download'])->name('download-report');
 
 require __DIR__.'/auth.php';
