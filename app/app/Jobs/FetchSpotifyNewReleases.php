@@ -32,16 +32,21 @@ class FetchSpotifyNewReleases implements ShouldQueue
                 ['name' => $artistData['name']]
             );
 
-            NewRelease::create([
-                'spotify_id' => $album['id'],
-                'title' => $album['name'],
-                'artist_id' => $artist->id,
-                'release_date' => $album['release_date'],
-                'genre' => $album['genres'][0] ?? null,
-                'label' => $album['label'] ?? null,
-            ]);
+            // Sprawdź, czy NewRelease już istnieje
+            $existingRelease = NewRelease::where('spotify_id', $album['id'])->first();
 
-            FetchSpotifyArtistDetails::dispatch($artist);
+            if (!$existingRelease) {
+                NewRelease::create([
+                    'spotify_id' => $album['id'],
+                    'title' => $album['name'],
+                    'artist_id' => $artist->id,
+                    'release_date' => $album['release_date'],
+                    'genre' => $album['genres'][0] ?? null,
+                    'label' => $album['label'] ?? null,
+                ]);
+
+                FetchSpotifyArtistDetails::dispatch($artist);
+            }
         }
     }
 }
