@@ -9,9 +9,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Pobieranie najnowszego wydania
-        $latestRelease = NewRelease::with('artist')->orderBy('release_date', 'desc')->first();
+        // Pobieranie ostatnich 50 wydań
+        $latestReleases = NewRelease::with('artist')->orderBy('release_date', 'desc')->take(50)->get();
 
-        return view('dashboard', compact('latestRelease'));
+        return view('dashboard', compact('latestReleases'));
     }
 }

@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ArtistController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,6 +39,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/artists', [ArtistController::class, 'index'])->name('artists.index');
+    Route::get('/artists/search', [ArtistController::class, 'search'])->name('artists.search');
+    Route::get('/artists/download-report', [ArtistController::class, 'downloadReport'])->name('artists.download-report');
 
     Route::post('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
