@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Artist;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -9,9 +10,23 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ArtistController;
+use App\Jobs\FetchArtistContactInfoFromWebsite;
+use App\Jobs\FetchSpotifyNewReleases;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/fetch-spotify-new-releases', function () {
+    FetchSpotifyNewReleases::dispatch();
+    return 'Job dispatched';
+});
+
+Route::get('/fetch-artist-contact-info/{id}', function ($id) {
+    $artist = Artist::findOrFail($id);
+    FetchArtistContactInfoFromWebsite::dispatch($artist);
+
+    return 'Job dispatched';
 });
 
 Route::get('/assign-admin-role', function() {

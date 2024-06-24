@@ -33,5 +33,7 @@ class FetchSpotifyArtistDetails implements ShouldQueue
             'website' => $artistDetails['website'] ?? null,
             'youtube' => $artistDetails['youtube'] ?? null,
         ]);
+
+        FetchArtistContactInfoFromWebsite::dispatch($this->artist);
     }
 }
