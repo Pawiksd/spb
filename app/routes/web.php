@@ -22,6 +22,7 @@ Route::get('/fetch-spotify-new-releases', function () {
     return 'Job dispatched';
 });
 
+// /fetch-artist-contact-info/0pVHBkObr9UNIWpms1e4I0
 Route::get('/fetch-artist-contact-info/{id}', function ($id) {
     $artist = Artist::findOrFail($id);
     FetchArtistContactInfoFromWebsite::dispatch($artist);
