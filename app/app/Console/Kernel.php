@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->job(new FetchSpotifyNewReleases)->daily();
+        $schedule->job(new UpdateMissingContactInfo)->daily()->at('00:00');
     }
 
     /**
