@@ -8,10 +8,10 @@ class ArtistObserver
 {
     public function created(Artist $artist)
     {
-        FetchSpotifyArtistDetails::dispatch($artist)
+       /* FetchSpotifyArtistDetails::dispatch($artist)
             ->delay(now()->addMinutes(3))
             ->onQueue('default')
             ->retryAfter(60)
-            ->tries(3);
+            ->tries(3);*/
     }
 }
