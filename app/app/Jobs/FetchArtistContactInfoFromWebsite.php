@@ -30,24 +30,29 @@ class FetchArtistContactInfoFromWebsite implements ShouldQueue
         $page->goto('https://open.spotify.com/artist/' . $this->artist->spotify_id);
 
         $aboutSection = $page->evaluate(JsFunction::createWithBody("
-            const aboutSection = Array.from(document.querySelectorAll('h2')).find(element => element.textContent.includes('About'));
-            if (aboutSection) {
-                const aboutButton = aboutSection.nextElementSibling.querySelector('button');
-                if (aboutButton) {
-                    aboutButton.click();
-                    setTimeout(() => {
-                        const aboutModal = document.querySelector('div.ReactModalPortal');
-                        const email = aboutModal.querySelector('a[href^=\"mailto:\"]')?.textContent || null;
-                        const instagram = aboutModal.querySelector('a[href*=\"instagram.com\"]')?.href || null;
-                        const facebook = aboutModal.querySelector('a[href*=\"facebook.com\"]')?.href || null;
-                        const website = aboutModal.querySelector('a[href^=\"http\"]')?.href || null;
-                        const youtube = aboutModal.querySelector('a[href*=\"youtube.com\"]')?.href || null;
+            return new Promise((resolve) => {
+                const aboutSection = Array.from(document.querySelectorAll('h2')).find(element => element.textContent.includes('About'));
+                if (aboutSection) {
+                    const aboutButton = aboutSection.nextElementSibling.querySelector('button');
+                    if (aboutButton) {
+                        aboutButton.click();
+                        setTimeout(() => {
+                            const aboutModal = document.querySelector('div.ReactModalPortal');
+                            const email = aboutModal.querySelector('a[href^=\"mailto:\"]')?.textContent || null;
+                            const instagram = aboutModal.querySelector('a[href*=\"instagram.com\"]')?.href || null;
+                            const facebook = aboutModal.querySelector('a[href*=\"facebook.com\"]')?.href || null;
+                            const website = aboutModal.querySelector('a[href^=\"http\"]')?.href || null;
+                            const youtube = aboutModal.querySelector('a[href*=\"youtube.com\"]')?.href || null;
 
-                        return { email, instagram, facebook, website, youtube };
-                    }, 2000); // Dajemy trochę czasu na załadowanie się popupu
+                            resolve({ email, instagram, facebook, website, youtube });
+                        }, 2000); // Dajemy trochę czasu na załadowanie się popupu
+                    } else {
+                        resolve({});
+                    }
+                } else {
+                    resolve({});
                 }
-            }
-            return {};
+            });
         "));
 
         $this->artist->update([
