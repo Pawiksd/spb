@@ -49,17 +49,5 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
 
-  bot:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile-bot
-    container_name: puppeteer_bot
-    volumes:
-      - ../bot:/usr/src/app
-    depends_on:
-      - app
-    environment:
-      - API_URL=http://nginx:80/api
-
 volumes:
   dbdata:
