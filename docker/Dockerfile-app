@@ -12,11 +12,13 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
+    && docker-php-ext-enable sockets
 
-# Install Node.js 16
+# Install Node.js and Puppeteer
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
+RUN npm install puppeteer
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -30,10 +32,6 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-# Install Node.js dependencies
-WORKDIR /var/www/html
-RUN npm install
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
