@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Jobs\FetchSpotifyArtistDetails;
+use Illuminate\Support\Facades\Log;
 
 class UpdateMissingContactInfo implements ShouldQueue
 {
@@ -21,19 +21,21 @@ class UpdateMissingContactInfo implements ShouldQueue
 
     public function handle()
     {
+        Log::info('Starting UpdateMissingContactInfo job.');
+
         $artists = Artist::whereNull('email')
                         ->orWhereNull('instagram')
                         ->orWhereNull('facebook')
                         ->orWhereNull('website')
                         ->orWhereNull('youtube')
+                        ->orWhereNull('twitter')
                         ->get();
 
         foreach ($artists as $artist) {
-            FetchSpotifyArtistDetails::dispatch($artist)
-                ->delay(now()->addSeconds(120))
-                ->onQueue('default')
-                ->retryAfter(60)
-                ->tries(2);
+            FetchArtistContactInfoFromWebsite::dispatch($artist);
+                //->onQueue('fetch-artist-info');
         }
+
+        Log::info('UpdateMissingContactInfo job completed.');
     }
 }
