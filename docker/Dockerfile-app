@@ -1,3 +1,4 @@
+# Use an official PHP runtime as a parent image
 FROM php:7.3-fpm
 
 # Set working directory
@@ -12,13 +13,33 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
-    && docker-php-ext-enable sockets
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libxcomposite1 \
+    libxrandr2 \
+    libgbm1 \
+    libpango-1.0-0 \
+    libasound2 \
+    libpangocairo-1.0-0 \
+    libgtk-3-0 \
+    supervisor \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets
 
-# Install Node.js and Puppeteer
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt-get install -y nodejs
-RUN npm install puppeteer
+# Install Node.js 18.x
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
+
+# Set permissions for npm cache and Puppeteer
+RUN mkdir -p /root/.config/puppeteer \
+    && mkdir -p /var/www/.npm \
+    && mkdir -p /var/www/.cache \
+    && chown -R www-data:www-data /root/.config \
+    && chown -R www-data:www-data /var/www/.npm \
+    && chown -R www-data:www-data /var/www/.cache
+
+# Install Puppeteer
+RUN npm install puppeteer --unsafe-perm=true
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -26,13 +47,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy application source
 COPY ./app /var/www/html
 
+# Copy supervisord configuration
+COPY  ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && mkdir -p /var/www/.cache /var/www/.npm \
+    && chown -R www-data:www-data /var/www/.cache /var/www/.npm
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN npm install
 
-# Expose port 9000 and start php-fpm server
+# Expose port 9000 and start supervisord
 EXPOSE 9000
-CMD ["php-fpm"]
+CMD ["/usr/bin/supervisord"]
