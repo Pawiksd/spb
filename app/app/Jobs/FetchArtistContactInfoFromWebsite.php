@@ -8,14 +8,17 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Nesk\Puphpeteer\Puppeteer;
-use Nesk\Rialto\Data\JsFunction;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class FetchArtistContactInfoFromWebsite implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $artist;
+    public $timeout = 600; // 600 seconds = 10 minutes
 
     public function __construct(Artist $artist)
     {
@@ -24,40 +27,49 @@ class FetchArtistContactInfoFromWebsite implements ShouldQueue
 
     public function handle()
     {
-        $puppeteer = new Puppeteer;
-        $browser = $puppeteer->launch();
-        $page = $browser->newPage();
-        $page->goto('https://open.spotify.com/artist/' . $this->artist->spotify_id);
+        Log::info('Starting FetchArtistContactInfoFromWebsite job for artist:', ['artist_id' => $this->artist->id]);
 
-        $aboutSection = $page->evaluate(JsFunction::createWithBody("
-            const aboutSection = Array.from(document.querySelectorAll('h2')).find(element => element.textContent.includes('About'));
-            if (aboutSection) {
-                const aboutButton = aboutSection.nextElementSibling.querySelector('button');
-                if (aboutButton) {
-                    aboutButton.click();
-                    setTimeout(() => {
-                        const aboutModal = document.querySelector('div.ReactModalPortal');
-                        const email = aboutModal.querySelector('a[href^=\"mailto:\"]')?.textContent || null;
-                        const instagram = aboutModal.querySelector('a[href*=\"instagram.com\"]')?.href || null;
-                        const facebook = aboutModal.querySelector('a[href*=\"facebook.com\"]')?.href || null;
-                        const website = aboutModal.querySelector('a[href^=\"http\"]')?.href || null;
-                        const youtube = aboutModal.querySelector('a[href*=\"youtube.com\"]')?.href || null;
+        if (Cache::has('fetch-artist-contact-info-lock')) {
+            Log::warning('Job is already running for another artist, releasing lock');
+            $this->release(10);
+            return;
+        }
 
-                        return { email, instagram, facebook, website, youtube };
-                    }, 2000); // Dajemy trochę czasu na załadowanie się popupu
-                }
+        Cache::put('fetch-artist-contact-info-lock', true, 600);
+
+        try {
+            $process = new Process(['node', base_path('scripts/fetch_artist_info.js'), $this->artist->spotify_id]);
+            $process->setTimeout($this->timeout - 10);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                Log::error('Process failed', ['output' => $process->getErrorOutput()]);
+                throw new ProcessFailedException($process);
             }
-            return {};
-        "));
 
-        $this->artist->update([
-            'email' => $aboutSection['email'] ?? $this->artist->email,
-            'instagram' => $aboutSection['instagram'] ?? $this->artist->instagram,
-            'facebook' => $aboutSection['facebook'] ?? $this->artist->facebook,
-            'website' => $aboutSection['website'] ?? $this->artist->website,
-            'youtube' => $aboutSection['youtube'] ?? $this->artist->youtube,
-        ]);
+            $output = json_decode($process->getOutput(), true);
 
-        $browser->close();
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error('Failed to decode JSON output from fetch_artist_info.js', ['output' => $process->getOutput()]);
+                return;
+            }
+
+            Log::info('Updating artist contact info', ['artist_id' => $this->artist->id, 'output' => $output]);
+
+            $this->artist->update([
+                'email' => $output['email'] ?? $this->artist->email,
+                'instagram' => $output['instagram'] ?? $this->artist->instagram,
+                'facebook' => $output['facebook'] ?? $this->artist->facebook,
+                'twitter' => $output['twitter'] ?? $this->artist->twitter,
+                'website' => $output['website'] ?? $this->artist->website,
+                'youtube' => $output['youtube'] ?? $this->artist->youtube,
+            ]);
+
+            Log::info('Artist contact info updated successfully', ['artist_id' => $this->artist->id]);
+        } catch (\Exception $e) {
+            Log::error('Error in FetchArtistContactInfoFromWebsite job', ['message' => $e->getMessage()]);
+        } finally {
+            Cache::forget('fetch-artist-contact-info-lock');
+        }
     }
 }
