@@ -61,7 +61,6 @@ class FetchSpotifyNewReleases implements ShouldQueue
                     'album' => $album['name'],
                     'error' => $e->getMessage(),
                 ]);
-                // Continue with the next album
                 continue;
             }
         }
