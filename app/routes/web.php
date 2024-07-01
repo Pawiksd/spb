@@ -12,6 +12,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ArtistController;
 use App\Jobs\FetchArtistContactInfoFromWebsite;
 use App\Jobs\FetchSpotifyNewReleases;
+use App\Jobs\UpdateMissingContactInfo;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,10 +23,15 @@ Route::get('/fetch-spotify-new-releases', function () {
     return 'Job dispatched';
 });
 
+Route::get('/update-artists', function () {
+    UpdateMissingContactInfo::dispatch();
+    return 'Job dispatched';
+});
+
 // /fetch-artist-contact-info/0pVHBkObr9UNIWpms1e4I0
 Route::get('/fetch-artist-contact-info/{id}', function ($id) {
     $artist = Artist::findOrFail($id);
-    FetchArtistContactInfoFromWebsite::dispatch($artist);
+    FetchArtistContactInfoFromWebsite::dispatch($artist); //->onQueue('fetch-artist-info');
 
     return 'Job dispatched';
 });
