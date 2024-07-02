@@ -4,6 +4,7 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class SpotifyService
 {
@@ -23,9 +24,17 @@ class SpotifyService
         }
 
         $client = new Client();
+
+        /*Log::info('SP key.', ['key' => env('SPOTIFY_CLIENT_ID')]);
+        Log::info('SP sec.', ['sec' => env('SPOTIFY_CLIENT_SECRET')]);
+
+        Log::info('SP key.', ['key' => config('services.spotify.client_id')]);
+        Log::info('SP sec.', ['sec' => config('services.spotify.client_secret')]);*/
+
+
         $response = $client->post('https://accounts.spotify.com/api/token', [
             'headers' => [
-                'Authorization' => 'Basic ' . base64_encode(env('SPOTIFY_CLIENT_ID') . ':' . env('SPOTIFY_CLIENT_SECRET')),
+                'Authorization' => 'Basic ' . base64_encode(config('services.spotify.client_id') . ':' . config('services.spotify.client_secret')),
             ],
             'form_params' => [
                 'grant_type' => 'client_credentials',
@@ -39,10 +48,10 @@ class SpotifyService
         return $token;
     }
 
-    public function getNewReleases()
+    public function getNewReleases($offset=0)
     {
         $token = $this->getAccessToken();
-        $response = $this->client->get('browse/new-releases?limit=50', [
+        $response = $this->client->get('browse/new-releases?limit=50&offset='.$offset, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
             ],
