@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight header">
             {{ __('Artists') }}
         </h2>
     </x-slot>
@@ -9,39 +9,48 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">Artists</h3>
+                    <h3 class="text-lg font-medium text-gray-900 header">Artists</h3>
                     <div class="mb-4">
                         <span>Total Artists: <strong>{{ $totalArtists }}</strong></span>
                     </div>
                     <input type="text" id="search-box" placeholder="Search artists..." class="mt-4 mb-4 p-2 border border-gray-300 rounded">
                     <div id="search-info" class="mb-4"></div>
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instagram</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Facebook</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Website</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">YouTube</th>
-                            </tr>
-                        </thead>
-                        <tbody id="artists-table" class="bg-white divide-y divide-gray-200">
-                            @foreach ($artists as $index => $artist)
-                                <tr class="{{ $index % 2 == 0 ? 'bg-gray-100' : 'bg-white' }}">
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $artist->name ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $artist->email ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $artist->instagram ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $artist->facebook ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $artist->website ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $artist->youtube ?? 'N/A' }}</td>
+                    <div class="table-container mt-4">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Instagram</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Facebook</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Website</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">YouTube</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody id="artists-table" class="bg-white divide-y divide-gray-200">
+                                @foreach ($artists as $index => $artist)
+                                    <tr class="{{ $index % 2 == 0 ? 'bg-gray-100' : 'bg-white' }}">
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->name ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->email ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->instagram ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->facebook ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->website ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->youtube ?? 'N/A' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="popup-overlay"></div>
+    <div class="popup">
+        <div class="popup-header"></div>
+        <div class="popup-body"></div>
+        <div class="popup-close">&times;</div>
     </div>
 
     <div class="mt-6">
