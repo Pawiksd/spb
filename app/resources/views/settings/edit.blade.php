@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight header">
             {{ __('Settings') }}
         </h2>
     </x-slot>
@@ -10,12 +10,13 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     @if(session('success'))
-                        <div class="alert alert-success">
+                        <div class="alert alert-success mb-4">
                             {{ session('success') }}
                         </div>
                     @endif
 
-                    <form action="{{ route('settings.update') }}" method="POST">
+                    <h3 class="text-lg font-medium text-gray-900">Settings</h3>
+                    <form action="{{ route('settings.update') }}" method="POST" class="mt-4">
                         @csrf
 
                         <div class="form-group mb-4">
@@ -48,7 +49,7 @@
                             <input type="password" name="smtp_password" id="smtp_password" class="form-input mt-1 block w-full" value="{{ env('MAIL_PASSWORD') }}" required>
                         </div>
 
-                        <button type="submit" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save Changes</button>
+                        <button type="submit" class="button">Save Changes</button>
                     </form>
                 </div>
             </div>
