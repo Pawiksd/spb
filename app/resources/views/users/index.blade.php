@@ -15,35 +15,37 @@
                         </div>
                     @endif
 
-                    <table class="table-auto w-full">
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-2">ID</th>
-                                <th class="px-4 py-2">Name</th>
-                                <th class="px-4 py-2">Email</th>
-                                <th class="px-4 py-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($users as $user)
+                    <div class="table-container mt-4">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
                                 <tr>
-                                    <td class="border px-4 py-2">{{ $user->id }}</td>
-                                    <td class="border px-4 py-2">{{ $user->name }}</td>
-                                    <td class="border px-4 py-2">{{ $user->email }}</td>
-                                    <td class="border px-4 py-2">
-                                        @can('admin')
-                                            <a href="{{ route('users.edit', $user->id) }}" class="text-blue-500 hover:text-blue-700">Edit</a>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 ml-4">Delete</button>
-                                            </form>
-                                        @endcan
-                                    </td>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach ($users as $user)
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $user->id }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $user->name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $user->email }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @can('admin')
+                                                <a href="{{ route('users.edit', $user->id) }}" class="text-blue-500 hover:text-blue-700">Edit</a>
+                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-500 hover:text-red-700 ml-4">Delete</button>
+                                                </form>
+                                            @endcan
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
