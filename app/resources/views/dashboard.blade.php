@@ -15,9 +15,21 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Artist</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Title</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Release Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                            <a href="{{ route('dashboard', ['sortField' => 'artist_name', 'sortOrder' => $sortOrder == 'asc' ? 'desc' : 'asc']) }}">
+                                                Artist
+                                            </a>
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                            <a href="{{ route('dashboard', ['sortField' => 'title', 'sortOrder' => $sortOrder == 'asc' ? 'desc' : 'asc']) }}">
+                                                Title
+                                            </a>
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                            <a href="{{ route('dashboard', ['sortField' => 'release_date', 'sortOrder' => $sortOrder == 'asc' ? 'desc' : 'asc']) }}">
+                                                Release Date
+                                            </a>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">

@@ -42,9 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let popupContent = '';
             const headerText = document.querySelector('.header')?.textContent || '';
 
-            console.log(headerText);
-            console.log(details);
-
             if (headerText.includes('Latest 50 New Releases')) {
                 popupContent = `
                     <p><strong>Artist:</strong> ${details[0]}</p>
@@ -70,8 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 document.querySelector('.popup-header').textContent = details[0] || '';
             }
-
-            console.log(popupContent)
 
             document.querySelector('.popup-body').innerHTML = popupContent;
 
