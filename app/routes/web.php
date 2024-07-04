@@ -14,9 +14,7 @@ use App\Jobs\FetchArtistContactInfoFromWebsite;
 use App\Jobs\FetchSpotifyNewReleases;
 use App\Jobs\UpdateMissingContactInfo;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Route::get('/fetch-spotify-new-releases', function () {
     FetchSpotifyNewReleases::dispatch();
@@ -32,10 +30,9 @@ Route::get('/update-artists', function () {
 Route::get('/fetch-artist-contact-info/{id}', function ($id) {
     $artist = Artist::findOrFail($id);
     FetchArtistContactInfoFromWebsite::dispatch($artist); //->onQueue('fetch-artist-info');
-
     return 'Job dispatched';
 });
-
+/*
 Route::get('/assign-admin-role', function() {
     $role = Role::firstOrCreate(['name' => 'admin']);
 
@@ -46,18 +43,22 @@ Route::get('/assign-admin-role', function() {
     return 'Admin role assigned to all users';
 });
 
+
 Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
-/*
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');*/
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return view('welcome');
+    });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -70,9 +71,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('logout');
 
 
-
     Route::middleware(['can:admin'])->group(function () {
         Route::resource('users', UserController::class)->except(['create', 'show', 'store']);
+        Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+        Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     });
 });
 
