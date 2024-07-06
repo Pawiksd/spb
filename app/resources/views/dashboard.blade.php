@@ -13,12 +13,12 @@
                     @if(auth()->user()->subscriptions()->exists())
                         <form action="{{ route('unsubscribe') }}" method="POST">
                             @csrf
-                            <button type="submit">Unsubscribe from Notifications</button>
+                            <button type="submit" class="btn btn-danger">Unsubscribe from Notifications</button>
                         </form>
                     @else
                         <form action="{{ route('subscribe') }}" method="POST">
                             @csrf
-                            <button type="submit">Subscribe to Notifications</button>
+                            <button type="submit" class="btn btn-primary">Subscribe to Notifications</button>
                         </form>
                     @endif
 
