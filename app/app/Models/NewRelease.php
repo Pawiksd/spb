@@ -10,11 +10,11 @@ class NewRelease extends Model
     use HasFactory;
 
     protected $fillable = [
-        'spotify_id', 'title', 'artist_id', 'genre', 'label', 'release_date'
+        'artist_id', 'title', 'release_date', 'genre', 'label'
     ];
 
     public function artist()
     {
-        return $this->belongsTo(Artist::class);
+        return $this->belongsTo(Artist::class, 'artist_id');
     }
 }

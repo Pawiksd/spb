@@ -14,8 +14,6 @@ use App\Jobs\FetchArtistContactInfoFromWebsite;
 use App\Jobs\FetchSpotifyNewReleases;
 use App\Jobs\UpdateMissingContactInfo;
 
-
-
 Route::get('/fetch-spotify-new-releases', function () {
     FetchSpotifyNewReleases::dispatch();
     return 'Job dispatched';
@@ -32,6 +30,7 @@ Route::get('/fetch-artist-contact-info/{id}', function ($id) {
     FetchArtistContactInfoFromWebsite::dispatch($artist); //->onQueue('fetch-artist-info');
     return 'Job dispatched';
 });
+
 /*
 Route::get('/assign-admin-role', function() {
     $role = Role::firstOrCreate(['name' => 'admin']);
@@ -66,10 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/artists', [ArtistController::class, 'index'])->name('artists.index');
     Route::get('/artists/search', [ArtistController::class, 'search'])->name('artists.search');
     Route::get('/artists/download-report', [ArtistController::class, 'downloadReport'])->name('artists.download-report');
+    Route::get('/artists/download-report-all', [ArtistController::class, 'downloadAllReport'])->name('artists.download-report-all'); // Dodanie tej trasy
 
     Route::post('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
-
 
     Route::middleware(['can:admin'])->group(function () {
         Route::resource('users', UserController::class)->except(['create', 'show', 'store']);
