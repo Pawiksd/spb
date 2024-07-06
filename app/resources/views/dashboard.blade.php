@@ -9,6 +9,19 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
+
+                    @if(auth()->user()->subscriptions()->exists())
+                        <form action="{{ route('unsubscribe') }}" method="POST">
+                            @csrf
+                            <button type="submit">Unsubscribe from Notifications</button>
+                        </form>
+                    @else
+                        <form action="{{ route('subscribe') }}" method="POST">
+                            @csrf
+                            <button type="submit">Subscribe to Notifications</button>
+                        </form>
+                    @endif
+
                     <h3 class="text-lg font-medium text-gray-900 header">Latest 50 New Releases</h3>
                     @if ($latestReleases->isNotEmpty())
                         <div class="table-container mt-4">

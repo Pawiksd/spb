@@ -48,24 +48,24 @@
                             <thead>
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Instagram</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Facebook</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Website</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">YouTube</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Twitter</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">YouTube</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Website</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
                                 </tr>
                             </thead>
                             <tbody id="artists-table" class="bg-white divide-y divide-gray-200">
                                 @foreach ($artists as $index => $artist)
                                     <tr class="{{ $index % 2 == 0 ? 'bg-gray-100' : 'bg-white' }}">
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $artist->name ?? 'N/A' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->email ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $artist->instagram ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $artist->facebook ?? 'N/A' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->website ?? 'N/A' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->youtube ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $artist->twitter ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->youtube ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->website ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $artist->email ?? 'N/A' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -13,6 +13,7 @@ use App\Http\Controllers\ArtistController;
 use App\Jobs\FetchArtistContactInfoFromWebsite;
 use App\Jobs\FetchSpotifyNewReleases;
 use App\Jobs\UpdateMissingContactInfo;
+use App\Http\Controllers\SubscriptionController;
 
 Route::get('/fetch-spotify-new-releases', function () {
     FetchSpotifyNewReleases::dispatch();
@@ -75,6 +76,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
         Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     });
+    
+    Route::post('/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscribe');
+    Route::post('/unsubscribe', [SubscriptionController::class, 'unsubscribe'])->name('unsubscribe');
 });
 
 Route::get('/download-report', [ReportController::class, 'download'])->name('download-report');
