@@ -14,6 +14,7 @@ use App\Jobs\FetchArtistContactInfoFromWebsite;
 use App\Jobs\FetchSpotifyNewReleases;
 use App\Jobs\UpdateMissingContactInfo;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\TestNotificationController;
 
 Route::get('/fetch-spotify-new-releases', function () {
     FetchSpotifyNewReleases::dispatch();
@@ -32,7 +33,10 @@ Route::get('/fetch-artist-contact-info/{id}', function ($id) {
     return 'Job dispatched';
 });
 
-/*
+
+Route::get('/test-notification', [TestNotificationController::class, 'sendTestNotification']);
+
+
 Route::get('/assign-admin-role', function() {
     $role = Role::firstOrCreate(['name' => 'admin']);
 
@@ -44,19 +48,9 @@ Route::get('/assign-admin-role', function() {
 });
 
 
-Route::middleware(['auth', 'can:admin'])->group(function () {
-    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
-    Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');*/
-
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
-        return view('welcome');
+        return view('dashboard');
     });
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -76,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
         Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     });
-    
+
     Route::post('/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscribe');
     Route::post('/unsubscribe', [SubscriptionController::class, 'unsubscribe'])->name('unsubscribe');
 });

@@ -3,10 +3,11 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewReleaseNotification extends Notification
+class NewReleaseNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -25,10 +26,9 @@ class NewReleaseNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('A new song has been released: ' . $this->release->title)
-            ->line('Artist: ' . $this->release->artist->name)
-            ->line('Release Date: ' . $this->release->release_date)
-            ->action('Listen Now', url('/releases/' . $this->release->id))
+            ->subject('New Release: ' . $this->release->title)
+            ->line('A new release is available: ' . $this->release->title)
+            ->action('View Release', url('/releases/' . $this->release->id))
             ->line('Thank you for using our application!');
     }
 }
