@@ -1,0 +1,18 @@
+<svg width="1024" height="1024" viewBox="112 112 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g>
+
+        <!-- Music notes and pulse lines -->
+        <path d="M200 500 Q 300 300, 400 500 T 600 500 T 800 500" stroke="#FFFFFF" stroke-width="20" fill="url(#gradient1)"/>
+        <circle cx="200" cy="500" r="20" fill="url(#gradient1)"/>
+        <circle cx="400" cy="500" r="20" fill="url(#gradient1)"/>
+        <circle cx="600" cy="500" r="20" fill="url(#gradient1)"/>
+        <circle cx="800" cy="500" r="20" fill="url(#gradient1)"/>
+    </g>
+    <text x="512" y="700" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="100" fill="url(#gradient1)">MusePulse</text>
+    <defs>
+        <linearGradient id="gradient1" x1="112" y1="112" x2="912" y2="912" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#4B0082"/>
+            <stop offset="1" stop-color="#8A2BE2"/>
+        </linearGradient>
+    </defs>
+</svg>
