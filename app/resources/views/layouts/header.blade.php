@@ -5,7 +5,7 @@
                 <!-- Logo -->
                 <div class="shrink-0">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10 w-auto">
+                        <img src="{{ asset('images/logo.svg') }}" alt="Logo" class="w-auto" style="height: 65px;">
                     </a>
                 </div>
 
