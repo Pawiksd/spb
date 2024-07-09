@@ -49,9 +49,10 @@ Route::get('/assign-admin-role', function() {
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
+    /*Route::get('/', function () {
         return view('dashboard');
-    });
+    });*/
+    Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
