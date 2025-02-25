@@ -25,7 +25,8 @@ RUN apt-get update && apt-get install -y \
     libpangocairo-1.0-0 \
     libgtk-3-0 \
     supervisor \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets zip
 
 # Install Node.js 18.x
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs

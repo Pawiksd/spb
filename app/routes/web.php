@@ -14,11 +14,22 @@ use App\Jobs\FetchArtistContactInfoFromWebsite;
 use App\Jobs\FetchSpotifyNewReleases;
 use App\Jobs\UpdateMissingContactInfo;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\TestNotificationController;
+use App\Http\Controllers\FetchNewReleasesController;
+use App\Jobs\FetchSpotifyNewReleasesJob;
 
 Route::get('/fetch-spotify-new-releases', function () {
     FetchSpotifyNewReleases::dispatch();
     return 'Job dispatched';
 });
+
+Route::get('/fetch-new-releases', [FetchNewReleasesController::class, 'fetchNewReleases']);
+
+Route::get('/fetch-new-releases-js', function () {
+    FetchSpotifyNewReleasesJob::dispatch();
+    return response()->json(['message' => 'Job dispatched']);
+});
+
 
 Route::get('/update-artists', function () {
     UpdateMissingContactInfo::dispatch();
@@ -32,7 +43,10 @@ Route::get('/fetch-artist-contact-info/{id}', function ($id) {
     return 'Job dispatched';
 });
 
-/*
+
+Route::get('/test-notification', [TestNotificationController::class, 'sendTestNotification']);
+
+
 Route::get('/assign-admin-role', function() {
     $role = Role::firstOrCreate(['name' => 'admin']);
 
@@ -44,20 +58,11 @@ Route::get('/assign-admin-role', function() {
 });
 
 
-Route::middleware(['auth', 'can:admin'])->group(function () {
-    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
-    Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');*/
-
-
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
+    /*Route::get('/', function () {
+        return view('dashboard');
+    });*/
+    Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -76,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
         Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     });
-    
+
     Route::post('/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscribe');
     Route::post('/unsubscribe', [SubscriptionController::class, 'unsubscribe'])->name('unsubscribe');
 });

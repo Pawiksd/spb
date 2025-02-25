@@ -10,7 +10,7 @@ class NewRelease extends Model
     use HasFactory;
 
     protected $fillable = [
-        'artist_id', 'title', 'release_date', 'genre', 'label'
+        'artist_id', 'title', 'release_date', 'genre', 'label', 'spotify_id'
     ];
 
     public function artist()
